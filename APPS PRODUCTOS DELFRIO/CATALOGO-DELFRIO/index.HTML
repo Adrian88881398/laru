@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos DelFrio - Catálogo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Importar Fuentes de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&family=MuseoModerno:wght@400;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Aplicar las fuentes personalizadas */
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #f8fafc; /* bg-gray-50 */
+        }
+        .font-title {
+            font-family: 'Michroma', sans-serif;
+        }
+        .font-slogan {
+            font-family: 'MuseoModerno', sans-serif;
+        }
+
+        /* --- Estilos para el Acordeón --- */
+        .accordion-header {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .accordion-header:hover {
+            background-color: #f4f4f5; /* gray-100 */
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            padding: 0 1.5rem; /* p-6 */
+        }
+        .accordion-content.open {
+            max-height: 2000px; /* Altura suficiente para el contenido */
+            padding: 1.5rem 1.5rem; /* p-6 */
+        }
+        .accordion-arrow {
+            transition: transform 0.3s ease;
+        }
+        .open .accordion-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* --- Estilos para las Burbujas (Color Índigo) --- */
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            /* Color Índigo (indigo-600 con opacidad) */
+            background: rgba(67, 56, 202, 0.3); 
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 5px rgba(255, 255, 255, 0.4) inset;
+            animation: animate-bubble 25s linear infinite;
+            opacity: 0; /* Empezar invisible */
+            pointer-events: none; /* Las burbujas no son clickeables */
+        }
+        
+        @keyframes animate-bubble {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0.1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-120vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Variaciones de las burbujas (30) */
+        .bubble:nth-child(1) { left: 10%; animation-duration: 20s; animation-delay: 0s; width: 30px; height: 30px; }
+        .bubble:nth-child(2) { left: 20%; animation-duration: 15s; animation-delay: 2s; width: 25px; height: 25px; }
+        .bubble:nth-child(3) { left: 35%; animation-duration: 22s; animation-delay: 5s; width: 40px; height: 40px; }
+        .bubble:nth-child(4) { left: 50%; animation-duration: 18s; animation-delay: 1s; width: 20px; height: 20px; }
+        .bubble:nth-child(5) { left: 65%; animation-duration: 25s; animation-delay: 3s; width: 35px; height: 35px; }
+        .bubble:nth-child(6) { left: 80%; animation-duration: 17s; animation-delay: 6s; width: 28px; height: 28px; }
+        .bubble:nth-child(7) { left: 90%; animation-duration: 23s; animation-delay: 4s; width: 22px; height: 22px; }
+        .bubble:nth-child(8) { left: 5%; animation-duration: 19s; animation-delay: 8s; width: 32px; height: 32px; }
+        .bubble:nth-child(9) { left: 25%; animation-duration: 21s; animation-delay: 7s; width: 38px; height: 38px; }
+        .bubble:nth-child(10) { left: 45%; animation-duration: 24s; animation-delay: 9s; width: 26px; height: 26px; }
+        .bubble:nth-child(11) { left: 15%; animation-duration: 20s; animation-delay: 1s; width: 30px; height: 30px; }
+        .bubble:nth-child(12) { left: 28%; animation-duration: 16s; animation-delay: 3s; width: 25px; height: 25px; }
+        .bubble:nth-child(13) { left: 40%; animation-duration: 23s; animation-delay: 6s; width: 40px; height: 40px; }
+        .bubble:nth-child(14) { left: 55%; animation-duration: 19s; animation-delay: 2s; width: 20px; height: 20px; }
+        .bubble:nth-child(15) { left: 70%; animation-duration: 26s; animation-delay: 4s; width: 35px; height: 35px; }
+        .bubble:nth-child(16) { left: 85%; animation-duration: 18s; animation-delay: 7s; width: 28px; height: 28px; }
+        .bubble:nth-child(17) { left: 95%; animation-duration: 24s; animation-delay: 5s; width: 22px; height: 22px; }
+        .bubble:nth-child(18) { left: 8%; animation-duration: 20s; animation-delay: 9s; width: 32px; height: 32px; }
+        .bubble:nth-child(19) { left: 30%; animation-duration: 22s; animation-delay: 8s; width: 38px; height: 38px; }
+        .bubble:nth-child(20) { left: 50%; animation-duration: 25s; animation-delay: 10s; width: 26px; height: 26px; }
+        .bubble:nth-child(21) { left: 60%; animation-duration: 20s; animation-delay: 0s; width: 30px; height: 30px; }
+        .bubble:nth-child(22) { left: 75%; animation-duration: 15s; animation-delay: 2s; width: 25px; height: 25px; }
+        .bubble:nth-child(23) { left: 30%; animation-duration: 22s; animation-delay: 5s; width: 40px; height: 40px; }
+        .bubble:nth-child(24) { left: 10%; animation-duration: 18s; animation-delay: 1s; width: 20px; height: 20px; }
+        .bubble:nth-child(25) { left: 45%; animation-duration: 25s; animation-delay: 3s; width: 35px; height: 35px; }
+        .bubble:nth-child(26) { left: 82%; animation-duration: 17s; animation-delay: 6s; width: 28px; height: 28px; }
+        .bubble:nth-child(27) { left: 92%; animation-duration: 23s; animation-delay: 4s; width: 22px; height: 22px; }
+        .bubble:nth-child(28) { left: 12%; animation-duration: 19s; animation-delay: 8s; width: 32px; height: 32px; }
+        .bubble:nth-child(29) { left: 55%; animation-duration: 22s; animation-delay: 8s; width: 38px; height: 38px; }
+        .bubble:nth-child(30) { left: 25%; animation-duration: 21s; animation-delay: 7s; width: 35px; height: 35px; }
+
+        /* --- Animación Icono de Limpieza (Flotar) --- */
+        .icon {
+            /* 'alternate' hace que la animación vaya y vuelva */
+            animation: float 3s ease-in-out infinite alternate;
+        }
+
+        /* Animación de "flotar" (subir y bajar) */
+        @keyframes float {
+            0% {
+                transform: translateY(-3px);
+            }
+            100% {
+                transform: translateY(3px);
+            }
+        }
+
+        /* Contenedor que se mueve de L-R */
+        .icon-tracker {
+            width: auto; /* Ocupa solo el ancho del icono, NO el 100% */
+            /* Se mueve de L-R, y luego (alternate) vuelve de R-L */
+            animation: slide 15s linear infinite alternate;
+        }
+        
+        /* Animación de deslizamiento L-R */
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                /* Moverse al 100% del contenedor MENOS el ancho del icono */
+                transform: translateX(calc(100% - 32px)); 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Contenedor de Burbujas -->
+    <div id="bubble-container" class="fixed inset-0 w-full h-full overflow-hidden z-20 pointer-events-none">
+        <!-- 30 burbujas -->
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+    </div>
+
+    <!-- Pantalla de Login -->
+    <div id="loginScreen" class="flex items-center justify-center min-h-screen relative z-10 transition-all duration-500 ease-out">
+        
+        <!-- Emojis flotantes de fondo -->
+        <div class="absolute top-1/4 left-10 text-4xl opacity-50 z-0 transform -rotate-12">🧹</div>
+        <div class="absolute top-1/3 right-12 text-5xl opacity-50 z-0 transform rotate-12">🧼</div>
+        <div class="absolute bottom-1/4 left-16 text-3xl opacity-50 z-0 transform rotate-6">🫧</div>
+        <div class="absolute bottom-1/3 right-10 text-4xl opacity-50 z-0 transform -rotate-6">🧽</div>
+        <div class="absolute top-1/2 left-20 text-4xl opacity-50 z-0 transform rotate-12">🌊</div>
+        <div class="absolute bottom-1/2 right-20 text-5xl opacity-50 z-0 transform -rotate-12">🐬</div>
+
+
+        <div class="w-full max-w-md p-8 m-4 bg-white rounded-2xl shadow-xl relative z-10">
+            <div class="text-center">
+                <!-- Icono (Color Índigo) -->
+                <svg class="w-20 h-20 mx-auto text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 9.8V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v2.8l-5.3 5.3a1 1 0 000 1.4l4.6 4.6a1 1 0 001.4 0L18 9.8zM14 7h2v2h-2V7z M6 15.2V20a1 1 0 001 1h8a1 1 0 001-1v-4.8l-5 5-5-5z M8 3h8v2H8V3z" />
+                </svg>
+                <!-- Título (Color Índigo) -->
+                <h1 class="mt-4 text-4xl font-title text-indigo-700">Productos DelFrio</h1>
+                <p class="mt-2 text-lg text-gray-600 font-slogan">La ola de limpieza que tu hogar necesita!</p>
+            </div>
+            <div class="mt-8">
+                <label for="customerName" class="block text-sm font-medium text-gray-700">Tu Nombre:</label>
+                <input type="text" id="customerName" class="mt-1 block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" placeholder="Escribe tu nombre para empezar">
+                <p id="nameError" class="mt-2 text-sm text-red-600 hidden">Por favor, escribe tu nombre.</p>
+                <!-- Botón (Degradado Índigo) -->
+                <button id="loginButton" class="mt-6 w-full bg-gradient-to-r from-indigo-500 to-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-indigo-500/30 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-105">
+                    Ingresar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla Principal de la App (Oculta por defecto) -->
+    <div id="appScreen" class="hidden min-h-screen relative z-10 transition-opacity duration-700 ease-in opacity-0">
+        <!-- Encabezado (Degradado Sutil) -->
+        <header class="sticky top-0 z-30 bg-gradient-to-r from-white via-indigo-50 to-indigo-100 shadow-lg border-b border-gray-200">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex justify-between items-center">
+                    <!-- Título (Color Índigo) -->
+                    <div class="flex items-center space-x-2">
+                        <span class="font-title text-xl font-bold text-indigo-700">Productos DelFrio</span>
+                    </div>
+
+                    <!-- Contenedor del Icono Animado -->
+                    <div id="icon-container" class="flex-1 h-8 mx-4 relative overflow-hidden">
+                        <div class="icon-tracker absolute top-0 left-0">
+                            <!-- Icono (Color Índigo, Animación "float") -->
+                            <svg class="w-8 h-8 text-indigo-500 icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 9.8V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v2.8l-5.3 5.3a1 1 0 000 1.4l4.6 4.6a1 1 0 001.4 0L18 9.8zM14 7h2v2h-2V7z M6 15.2V20a1 1 0 001 1h8a1 1 0 001-1v-4.8l-5 5-5-5z M8 3h8v2H8V3z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Saludo y Carrito (Botón Degradado) -->
+                    <div class="flex items-center space-x-4">
+                        <span id="welcomeMessage" class="text-sm text-gray-700 hidden md:block"></span>
+                        <button id="cartButton" class="relative bg-gradient-to-r from-indigo-500 to-indigo-700 text-white p-2 rounded-full shadow-lg hover:shadow-indigo-500/30 transition-transform transform hover:scale-110">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span id="cartCount" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido Principal (Catálogo) -->
+        <main class="container mx-auto p-4 relative z-10">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 font-slogan">Nuestro Catálogo</h2>
+            
+            <!-- Contenedor del Acordeón de Productos -->
+            <div id="productListContainer" class="space-y-4">
+                <!-- Los productos se insertarán aquí dinámicamente -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal del Carrito (Efecto "Glassmorphism") -->
+    <div id="cartModal" class="fixed inset-0 z-40 flex items-center justify-center hidden bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300 ease-out opacity-0">
+        <!-- Contenedor del modal con efecto vidrio -->
+        <div class="cart-modal-box flex flex-col w-11/12 max-w-lg bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl shadow-xl h-[90vh] max-h-[600px] overflow-hidden transition-all duration-300 ease-out scale-95">
+            <!-- Encabezado del Modal (Semi-transparente) -->
+            <div class="flex items-center justify-between p-5 bg-white/50 border-b border-white/30">
+                <h3 class="text-2xl font-bold text-indigo-900 font-slogan">Tu Pedido</h3>
+                <button id="closeCartButton" class="text-gray-500 hover:text-gray-800 transition-transform transform hover:rotate-90">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Contenido del Carrito (Scrollable) -->
+            <div id="cartItemsContainer" class="flex-1 p-6 overflow-y-auto space-y-4">
+                <!-- Items del carrito y datos de pago se insertan aquí -->
+            </div>
+
+            <!-- Pie del Modal (Semi-transparente) -->
+            <div class="p-6 bg-white/50 border-t border-white/30">
+                
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-medium text-gray-700">Total:</span>
+                    <span id="cartTotal" class="text-2xl font-bold text-indigo-700">$0.00</span>
+                </div>
+                <!-- Botón (Degradado Índigo) -->
+                <button id="checkoutButton" class="w-full bg-gradient-to-r from-indigo-500 to-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-indigo-500/30 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-105">
+                    Realizar Pedido por WhatsApp
+                </button>
+                <a id="whatsappLinkButton" href="#" target="_blank" class="hidden w-full text-center bg-green-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-105" style="display: none;">
+                    Confirmar y Abrir WhatsApp
+                </a>
+                <button id="cancelCheckoutButton" class="hidden w-full bg-gray-500 text-white font-bold py-2 px-4 rounded-lg mt-2 hover:bg-gray-600 transition-all" style="display: none;">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Éxito de Pedido (Efecto "Glassmorphism") -->
+    <div id="orderSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300 ease-out opacity-0">
+        <!-- Contenedor del modal con efecto vidrio -->
+        <div class="success-modal-box w-full max-w-md p-8 m-4 text-center bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl shadow-xl transition-all duration-300 ease-out scale-95">
+            <svg class="w-20 h-20 mx-auto text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <h3 id="successTitle" class="mt-4 text-2xl font-bold text-gray-900">¡Gracias por tu pedido!</h3>
+            <p id="successMessage" class="mt-2 text-gray-600">Se está abriendo WhatsApp. Una vez enviado el mensaje, nosotros nos encargaremos del resto.</p>
+            <!-- Botón (Degradado Índigo) -->
+            <button id="closeSuccessButton" class="mt-6 w-full bg-gradient-to-r from-indigo-500 to-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-indigo-500/30 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all">
+                Entendido
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast de Notificación (z-index alto) -->
+    <div id="toast" class="fixed bottom-5 right-5 z-[100] px-5 py-3 text-white bg-gray-900 rounded-lg shadow-lg transition-transform translate-x-[150%] duration-300 ease-in-out">
+        <p id="toastMessage">¡Producto agregado!</p>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- Base de Datos de Productos (Extraída del PDF) ---
+        const productData = {
+            "Blanqueadores": [
+                { id: 1001, name: "Cloro", price: 5.00 },
+                { id: 1002, name: "Cloro en Gel", price: 20.00 },
+                { id: 1003, name: "Vanish", price: 20.00 }
+            ],
+            "Jabónes para ropa": [
+                { id: 2001, name: "Ariel con Downy", price: 20.00 },
+                { id: 2002, name: "Ariel Oxxy", price: 20.00 },
+                { id: 2003, name: "Ariel Doble Poder", price: 20.00 },
+                { id: 2004, name: "Más Negrura", price: 20.00 },
+                { id: 2005, name: "Zote rosa/blanco", price: 20.00 },
+                { id: 2006, name: "Más Color", price: 20.00 },
+                { id: 2007, name: "Vel Rosita", price: 20.00 }
+            ],
+            "Fabulosos": [
+                { id: 3001, name: "Lavanda", price: 10.00 },
+                { id: 3002, name: "Mar Fresco", price: 10.00 },
+                { id: 3003, name: "Frutos Rojos", price: 10.00 },
+                { id: 3004, name: "Cítricos", price: 10.00 },
+                { id: 3005, name: "Lima Limón", price: 10.00 },
+                { id: 3006, name: "Violetas", price: 10.00 },
+                { id: 3007, name: "Manzana-Canela", price: 10.00 },
+                { id: 3008, name: "Stefano", price: 10.00 },
+                { id: 3009, name: "Hugo Boss", price: 10.00 },
+                { id: 3010, name: "Mango-Kiwi", price: 10.00 },
+                { id: 3011, name: "Sandía", price: 10.00 },
+                { id: 3012, name: "Brisas", price: 10.00 }
+            ],
+            "Pino": [
+                { id: 4001, name: "Pino Blanco", price: 8.00 }
+            ],
+            "Suavizante de telas": [
+                { id: 5001, name: "Suavitel Bebé", price: 15.00 },
+                { id: 5002, name: "Suavitel Primavera", price: 15.00 },
+                { id: 5003, name: "Suavitel Perlas Activas", price: 15.00 },
+                { id: 5004, name: "Downy", price: 15.00 },
+                { id: 5005, name: "Suavitel Anochecer", price: 15.00 },
+                { id: 5006, name: "Suavitel Dulce Placer", price: 15.00 },
+                { id: 5007, name: "Suavitel Queen", price: 15.00 },
+                { id: 5008, name: "Suavitel Sensacional", price: 15.00 },
+                { id: 5009, name: "Suavitel Naturaleza", price: 15.00 },
+                { id: 5010, name: "Suavitel Ensueño", price: 15.00 }
+            ],
+            "Jabón para trastes": [
+                { id: 6001, name: "Salvo", price: 25.00 }
+            ],
+            "Aromatizantes": [
+                { id: 7001, name: "Perry Ellies", price: 15.00 },
+                { id: 7002, name: "Stefano", price: 15.00 },
+                { id: 7003, name: "360°", price: 15.00 },
+                { id: 7004, name: "Chica Fresa", price: 15.00 },
+                { id: 7005, name: "Chicle", price: 15.00 },
+                { id: 7006, name: "Canela", price: 15.00 },
+                { id: 7007, name: "Manza", price: 15.00 }, // Asumiendo 'Manzana'
+                { id: 7008, name: "Ferrary", price: 15.00 },
+                { id: 7009, name: "Polo Sport", price: 15.00 },
+                { id: 7010, name: "Carolina Herrera", price: 15.00 },
+                { id: 7011, name: "Coco", price: 15.00 },
+                { id: 7012, name: "Drakar", price: 15.00 },
+                { id: 7013, name: "Black Ice", price: 15.00 },
+                { id: 7014, name: "Animal", price: 15.00 }
+            ],
+            "Linea Automotriz": [
+                { id: 8001, name: "Armor All Líquido", price: 40.00 },
+                { id: 8002, name: "Glicerina", price: 80.00 },
+                { id: 8003, name: "Detercon", price: 20.00 },
+                { id: 8004, name: "Esponja Suave", price: 12.00 },
+                { id: 8005, name: "Esponja Dura", price: 18.00 },
+                { id: 8006, name: "Teflon Automotriz", price: 25.00 },
+                { id: 8007, name: "Armor All en Gel", price: 45.00 },
+                { id: 8008, name: "Desengrasante Industrial", price: 25.00 }
+            ],
+            "Otros Productos": [
+                { id: 9001, name: "Jabón en Polvo (kg)", price: 28.00 },
+                { id: 9002, name: "Mata-todo", price: 25.00 },
+                { id: 9003, name: "Criolina", price: 30.00 },
+                { id: 9004, name: "Sosa Liquida", price: 25.00 },
+                { id: 9005, name: "Quitasarro", price: 30.00 }
+            ],
+            "Jabón para Manos": [
+                { id: 10001, name: "Cereza", price: 15.00 },
+                { id: 10002, name: "Pera-Manzana", price: 15.00 },
+                { id: 10003, name: "Sandía", price: 15.00 },
+                { id: 10004, name: "Plátano", price: 15.00 },
+                { id: 10005, name: "Coco", price: 15.00 }
+            ],
+            "Jarcería": [
+                { id: 11001, name: "Lazo para Tendedero 10 mts", price: 30.00 },
+                { id: 11002, name: "Lazo para Tendedero 15 mts", price: 40.00 },
+                { id: 11003, name: "Jícaras", price: 5.00 },
+                { id: 11004, name: "Pinzas 50 pzs.", price: 35.00 },
+                { id: 11005, name: "Atomizador 1 lt", price: 35.00 },
+                { id: 11006, name: "Atomizador 1/2 lt", price: 25.00 },
+                { id: 11007, name: "Cepillo para Ropa Chico", price: 10.00 },
+                { id: 11008, name: "Cepillo para Ropa Grande Flexible", price: 20.00 },
+                { id: 11009, name: "Cepillo para Ropa Mediano Duro", price: 20.00 },
+                { id: 11010, name: "Cepillo para Ropa Grande", price: 18.00 },
+                { id: 11011, name: "Pastilla para Baño", price: 15.00 },
+                { id: 11012, name: "Pastillas de Cloro (4 pzs.)", price: 20.00 },
+                { id: 11013, name: "Piedra Pómez", price: 7.00 },
+                { id: 11014, name: "Fibra Ajáx", price: 5.00 },
+                { id: 11015, name: "Fibra Mex Verde Chica", price: 8.00 },
+                { id: 11016, name: "Fibra Mex Verde Grande", price: 12.00 },
+                { id: 11017, name: "Fibra de Scotch Brite", price: 25.00 },
+                { id: 11018, name: "Fibra de Metal Redonda Grande", price: 15.00 },
+                { id: 11019, name: "Fibra de Metal Redonda Chica", price: 10.00 },
+                { id: 11020, name: "Fibra Mini Acero", price: 8.00 },
+                { id: 11021, name: "Fibra Esponja Multiusos", price: 12.00 },
+                { id: 11022, name: "Sacate para Trastes", price: 12.00 },
+                { id: 11023, name: "Fregón", price: 15.00 },
+                { id: 11024, name: "Escobetas", price: 10.00 },
+                { id: 11025, name: "Escobeta Plástico", price: 15.00 },
+                { id: 11026, name: "Tierra Azul Bolsa", price: 4.00 },
+                { id: 11027, name: "Tierra Rosa Bolsa", price: 4.00 },
+                { id: 11028, name: "Escoba Mega Económica", price: 40.00 },
+                { id: 11029, name: "Escoba Palma de Oro", price: 70.00 },
+                { id: 11030, name: "Escoba Perico", price: 70.00 },
+                { id: 11031, name: "Palo de Escoba", price: 20.00 },
+                { id: 11032, name: "Jalador Jumbo", price: 60.00 },
+                { id: 11033, name: "Mechudo", price: 70.00 },
+                { id: 11034, name: "Recogedor de Metal", price: 40.00 },
+                { id: 11035, name: "Recogedor Grande de Plástico", price: 40.00 },
+                { id: 11036, name: "Jergas 1 mt.", price: 25.00 },
+                { id: 11037, name: "Bote de Basura", price: 30.00 },
+                { id: 11038, name: "Trapo de Cocina", price: 10.00 },
+                { id: 11039, name: "Franela", price: 20.00 },
+                { id: 11040, name: "Franela Estampada", price: 35.00 },
+                { id: 11041, name: "Guantes", price: 25.00 },
+                { id: 11042, name: "Cubeta Grande de Plástico", price: 35.00 },
+                { id: 11043, name: "Cubeta Chica de Plástico", price: 25.00 },
+                { id: 11044, name: "Ganchos", price: 35.00 },
+                { id: 11045, name: "Tierra Eficaz (bolsa)", price: 10.00 },
+                { id: 11046, name: "Sacate para Baño", price: 15.00 },
+                { id: 11047, name: "Carrusel Redondo", price: 60.00 }
+            ]
+        };
+
+        // --- Estado de la Aplicación ---
+        let cart = {}; // { productId: { name, price, quantity } }
+        let customerName = "";
+        const businessPhoneNumber = "5215636222837"; // Número de WhatsApp (Formato internacional +52 1 ...)
+
+        // --- Selectores del DOM ---
+        const loginScreen = document.getElementById('loginScreen');
+        const appScreen = document.getElementById('appScreen');
+        const customerNameInput = document.getElementById('customerName');
+        const loginButton = document.getElementById('loginButton');
+        const nameError = document.getElementById('nameError');
+        
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const cartButton = document.getElementById('cartButton');
+        const cartCount = document.getElementById('cartCount');
+        const productListContainer = document.getElementById('productListContainer');
+        
+        const cartModal = document.getElementById('cartModal');
+        const closeCartButton = document.getElementById('closeCartButton');
+        const cartItemsContainer = document.getElementById('cartItemsContainer');
+        const cartTotal = document.getElementById('cartTotal');
+        const checkoutButton = document.getElementById('checkoutButton');
+        const whatsappLinkButton = document.getElementById('whatsappLinkButton');
+        const cancelCheckoutButton = document.getElementById('cancelCheckoutButton');
+
+        const orderSuccessModal = document.getElementById('orderSuccessModal');
+        const closeSuccessButton = document.getElementById('closeSuccessButton');
+        const successTitle = document.getElementById('successTitle');
+        const successMessage = document.getElementById('successMessage');
+
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        const iconContainer = document.getElementById('icon-container');
+
+        // --- Funciones de Lógica ---
+
+        // Ajusta el espacio para el icono animado en el encabezado
+        function positionIconContainer() {
+            const header = appScreen.querySelector('header .container');
+            const title = header.querySelector('.font-title');
+            const cartSection = header.querySelector('.flex.items-center.space-x-4');
+            
+            if (header && title && cartSection && iconContainer) {
+                const headerWidth = header.offsetWidth;
+                const titleWidth = title.offsetWidth;
+                const cartWidth = cartSection.offsetWidth;
+                // 40px de padding/márgenes
+                const availableSpace = headerWidth - titleWidth - cartWidth - 40; 
+                
+                if (availableSpace > 50) { // Solo mostrar si hay espacio suficiente
+                    iconContainer.style.width = `${availableSpace}px`;
+                    iconContainer.classList.remove('hidden');
+                } else {
+                    iconContainer.classList.add('hidden');
+                }
+            }
+        }
+        
+        // Dibuja la lista de productos en formato acordeón
+        function renderProducts() {
+            productListContainer.innerHTML = '';
+            let isFirstCategory = true;
+
+            for (const category in productData) {
+                const categoryId = category.replace(/\s+/g, '-').toLowerCase();
+                const isOpen = isFirstCategory ? 'open' : '';
+                const isFirstRotate = isFirstCategory ? '' : '-rotate-180'; // Flecha apunta abajo por defecto
+
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden';
+
+                const header = document.createElement('div');
+                header.className = 'accordion-header flex justify-between items-center p-5';
+                header.setAttribute('data-target', `#content-${categoryId}`);
+                header.innerHTML = `
+                    <h3 class="text-xl font-bold text-indigo-700 font-slogan">${category}</h3>
+                    <svg class="accordion-arrow w-6 h-6 text-indigo-500 transition-transform ${isFirstRotate}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                `;
+
+                const content = document.createElement('div');
+                content.id = `content-${categoryId}`;
+                content.className = `accordion-content ${isOpen}`;
+                
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+
+                productData[category].forEach(product => {
+                    const productCard = createProductCard(product);
+                    grid.appendChild(productCard);
+                });
+
+                content.appendChild(grid);
+                accordionItem.appendChild(header);
+                accordionItem.appendChild(content);
+                productListContainer.appendChild(accordionItem);
+                
+                isFirstCategory = false; // Solo la primera se abre
+            }
+        }
+
+        // Crea la tarjeta individual de un producto
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200';
+            
+            const currentQuantity = cart[product.id] ? cart[product.id].quantity : 0;
+            
+            card.innerHTML = `
+                <div>
+                    <p class="font-bold text-gray-800">${product.name}</p>
+                    <p class="text-sm text-gray-600">$${product.price.toFixed(2)}</p>
+                </div>
+                <div class="quantity-controls" data-product-id="${product.id}">
+                    ${generateQuantityControls(product, currentQuantity)}
+                </div>
+            `;
+            return card;
+        }
+
+        // Genera los botones de +/- o "Agregar"
+        function generateQuantityControls(product, quantity) {
+            if (quantity === 0) {
+                // *** CORRECCIÓN AQUÍ: Añadido active:scale-95 para feedback de clic ***
+                return `
+                    <button class="add-to-cart-btn bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105 active:scale-95" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}">
+                        Agregar
+                    </button>
+                `;
+            } else {
+                // *** CORRECCIÓN AQUÍ: Añadido transition y active:scale-90 a botones +/- ***
+                return `
+                    <div class="flex items-center space-x-3 bg-white border border-gray-300 rounded-lg shadow-sm">
+                        <button class="decrease-quantity-btn text-indigo-600 hover:text-indigo-800 p-2 transition-transform transform active:scale-90" data-product-id="${product.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" /></svg>
+                        </button>
+                        <span class="font-bold text-gray-900 text-lg w-6 text-center">${quantity}</span>
+                        <button class="increase-quantity-btn text-indigo-600 hover:text-indigo-800 p-2 transition-transform transform active:scale-90" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" /></svg>
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Actualiza una tarjeta de producto (para cambiar de "Agregar" a +/-)
+        function updateProductCard(productId) {
+            const controls = document.querySelector(`.quantity-controls[data-product-id="${productId}"]`);
+            if (controls) {
+                const product = findProductById(productId, true); // Obtener el objeto producto completo
+                const quantity = cart[productId] ? cart[productId].quantity : 0;
+                controls.innerHTML = generateQuantityControls(product, quantity);
+            }
+        }
+
+        // Dibuja los items dentro del modal del carrito
+        function renderCart() {
+            cartItemsContainer.innerHTML = ''; // 1. Limpiar el contenedor
+            let total = 0;
+            const cartHasItems = Object.keys(cart).length > 0;
+
+            if (cartHasItems) {
+                // 2. Agregar productos si los hay
+                for (const productId in cart) {
+                    const item = cart[productId];
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+
+                    const cartItemElement = document.createElement('div');
+                    cartItemElement.className = 'flex items-center justify-between p-4 bg-white/70 rounded-lg shadow-sm border border-gray-200';
+                    // *** CORRECCIÓN AQUÍ: Añadido transition y active:scale-90 a botones +/- del carrito ***
+                    cartItemElement.innerHTML = `
+                        <div>
+                            <p class="font-bold text-gray-800">${item.name} (x${item.quantity})</p>
+                            <p class="text-sm text-gray-600">$${itemTotal.toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button class="cart-decrease-btn text-red-500 hover:text-red-700 p-1 rounded-full bg-red-100/70 transition-transform transform active:scale-90" data-product-id="${productId}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" /></svg>
+                            </button>
+                            <button class="cart-increase-btn text-green-500 hover:text-green-700 p-1 rounded-full bg-green-100/70 transition-transform transform active:scale-90" data-product-id="${productId}" data-product-name="${item.name}" data-product-price="${item.price}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" /></svg>
+                            </button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(cartItemElement);
+                }
+            } else {
+                // Mensaje de carrito vacío
+                cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center">Aún no has agregado productos.</p>';
+            }
+
+            // 3. Agregar SIEMPRE la información de pago al final del contenedor
+            const paymentInfoHTML = `
+                <div class="mt-6 pt-4 border-t border-indigo-200/50">
+                    <div class="p-4 bg-indigo-50/70 border border-indigo-200/60 rounded-lg">
+                        <h4 class="text-sm font-bold text-indigo-800 mb-2">Formas de pago aceptadas:✅</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                            <li><span class="font-semibold">Efectivo 💵🪙(al momento de la entrega de su pedido)</span></li>
+                            <li>
+                                <span class="font-semibold">Transferencia Bancaria: 📲💸</span>
+                                <ul class="list-none pl-6 text-xs text-gray-600">
+                                    <li><strong>Banco:</strong> BBVA</li>
+                                    <li><strong>Nombre:</strong> LUIS ADRIAN RAYON UGALDE</li>
+                                    <li><strong>CLABE:</strong> 012 180 01537760792 9</li>
+                                    <li><strong>Numero de Tarjeta:</strong> 4152 3144 7764 4093</li>
+                                    <li><strong>Concepto:</strong> TU NOMBRE DE CLIENTE</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <p class="text-xs text-indigo-700 mt-2 italic">Por favor, envía tu comprobante por WhatsApp al confirmar.</p>
+                    </div>
+                </div>
+            `;
+            // Insertar el HTML de pago al final del contenedor (después de los productos o del mensaje de vacío)
+            cartItemsContainer.insertAdjacentHTML('beforeend', paymentInfoHTML);
+
+            // 4. Actualizar el total y los botones en el footer
+            cartTotal.textContent = `$${total.toFixed(2)}`;
+            if (cartHasItems) {
+                checkoutButton.disabled = false;
+                checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                checkoutButton.disabled = true;
+                checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Añade un producto al carrito (o incrementa)
+        function addToCart(productId, name, price) {
+            if (cart[productId]) {
+                cart[productId].quantity++;
+            } else {
+                cart[productId] = { name, price: parseFloat(price), quantity: 1 };
+            }
+            updateCart();
+            updateProductCard(productId);
+        }
+
+        // Quita un producto del carrito (o decrementa)
+        function removeFromCart(productId) {
+            if (cart[productId]) {
+                cart[productId].quantity--;
+                if (cart[productId].quantity <= 0) {
+                    delete cart[productId];
+                }
+                updateCart();
+                updateProductCard(productId);
+            }
+        }
+        
+        // Actualiza el contador del ícono del carrito
+        function updateCart() {
+            let totalItems = 0;
+            for (const productId in cart) {
+                totalItems += cart[productId].quantity;
+            }
+            cartCount.textContent = totalItems;
+            
+            // Si el modal está abierto, redibujarlo
+            if (!cartModal.classList.contains('hidden')) {
+                renderCart();
+            }
+        }
+
+        // Muestra una notificación (toast)
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-x-[150%]');
+            toast.classList.add('translate-x-0');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-x-0');
+                toast.classList.add('translate-x-[150%]');
+            }, 3000);
+        }
+
+        // Genera el mensaje y enlace de WhatsApp
+        function generateWhatsAppLink() {
+            let message = `¡Hola *Productos DelFrio*!\n\nSoy *${customerName}* y me gustaría hacer el siguiente pedido:\n\n`;
+            let total = 0;
+
+            for (const productId in cart) {
+                const item = cart[productId];
+                const itemTotal = item.price * item.quantity;
+                message += `*${item.quantity}* x ${item.name} - $${itemTotal.toFixed(2)}\n`;
+                total += itemTotal;
+            }
+            message += `\n*TOTAL: $${total.toFixed(2)}*\n\n¡Muchas gracias!`;
+
+            const encodedMessage = encodeURIComponent(message);
+            return `https://api.whatsapp.com/send?phone=${businessPhoneNumber}&text=${encodedMessage}`;
+        }
+        
+        // Busca un producto en la BD por su ID
+        function findProductById(productId, returnObject = false) {
+            productId = parseInt(productId, 10);
+            for (const category in productData) {
+                const product = productData[category].find(p => p.id === productId);
+                if (product) {
+                    return returnObject ? product : product.name;
+                }
+            }
+            return returnObject ? null : "Producto"; // Fallback
+        }
+
+        // --- Event Listeners (Manejadores de Eventos) ---
+
+        // Login
+        loginButton.addEventListener('click', () => {
+            customerName = customerNameInput.value.trim();
+            if (customerName) {
+                loginScreen.classList.add('opacity-0', 'scale-150');
+                appScreen.classList.remove('hidden');
+                
+                // Actualiza el saludo
+                const firstName = customerName.split(' ')[0]; // Solo el primer nombre
+                welcomeMessage.textContent = `¡Hola, ${firstName}!`;
+                renderProducts();
+                
+                // Animación de entrada
+                setTimeout(() => {
+                    appScreen.classList.remove('opacity-0');
+                    positionIconContainer(); // Ajustar el ícono después de mostrar
+                }, 300); 
+
+                setTimeout(() => {
+                    loginScreen.classList.add('hidden');
+                }, 700); // Ocultar login después de la animación
+                
+            } else {
+                nameError.classList.remove('hidden');
+                customerNameInput.classList.add('border-red-500');
+            }
+        });
+
+        customerNameInput.addEventListener('input', () => {
+            if (customerNameInput.value.trim()) {
+                nameError.classList.add('hidden');
+                customerNameInput.classList.remove('border-red-500');
+            }
+        });
+
+        // Ajustar el ícono si la ventana cambia de tamaño
+        window.addEventListener('resize', positionIconContainer);
+
+        // Abrir Modal del Carrito
+        cartButton.addEventListener('click', () => {
+            const modalBox = cartModal.querySelector('.cart-modal-box');
+            cartModal.classList.remove('hidden');
+            cartModal.offsetWidth; // Forzar reflow para que la animación funcione
+            cartModal.classList.remove('opacity-0');
+            modalBox.classList.remove('scale-95');
+            
+            renderCart(); // Dibujar el carrito
+            // Resetear botones de checkout
+            checkoutButton.classList.remove('hidden');
+            whatsappLinkButton.classList.add('hidden');
+            whatsappLinkButton.style.display = 'none'; 
+            cancelCheckoutButton.classList.add('hidden');
+            cancelCheckoutButton.style.display = 'none'; 
+        });
+
+        // Cerrar Modal del Carrito
+        closeCartButton.addEventListener('click', () => {
+            const modalBox = cartModal.querySelector('.cart-modal-box');
+            cartModal.classList.add('opacity-0');
+            modalBox.classList.add('scale-95');
+            
+            setTimeout(() => {
+                cartModal.classList.add('hidden');
+            }, 300); // Duración de la animación
+        });
+
+        // Eventos en la lista de productos (Acordeón y Botones)
+        productListContainer.addEventListener('click', (e) => {
+            const addBtn = e.target.closest('.add-to-cart-btn');
+            const incBtn = e.target.closest('.increase-quantity-btn');
+            const decBtn = e.target.closest('.decrease-quantity-btn');
+            
+            if (addBtn) {
+                const { productId, productName, productPrice } = addBtn.dataset;
+                addToCart(productId, productName, productPrice);
+                showToast(`"${productName}" agregado!`);
+            } else if (incBtn) {
+                const { productId, productName, productPrice } = incBtn.dataset;
+                addToCart(productId, productName, productPrice);
+            } else if (decBtn) {
+                const { productId } = decBtn.dataset;
+                removeFromCart(productId);
+            }
+
+            // Lógica del Acordeón
+            const header = e.target.closest('.accordion-header');
+            if (header) {
+                const targetId = header.dataset.target;
+                const content = document.querySelector(targetId);
+                const arrow = header.querySelector('.accordion-arrow');
+
+                if (content.classList.contains('open')) {
+                    content.classList.remove('open');
+                    arrow.classList.add('-rotate-180'); // Girar a flecha arriba
+                } else {
+                    // Cerrar otros acordeones abiertos
+                    document.querySelectorAll('.accordion-content.open').forEach(openContent => {
+                         openContent.classList.remove('open');
+                         openContent.previousElementSibling.querySelector('.accordion-arrow').classList.add('-rotate-180');
+                     });
+                    
+                    content.classList.add('open');
+                    arrow.classList.remove('-rotate-180'); // Girar a flecha abajo
+                }
+            }
+        });
+
+        // Eventos en los botones +/- del Carrito
+        cartItemsContainer.addEventListener('click', (e) => {
+            const incBtn = e.target.closest('.cart-increase-btn');
+            const decBtn = e.target.closest('.cart-decrease-btn');
+
+            if (incBtn) {
+                const { productId, productName, productPrice } = incBtn.dataset;
+                addToCart(productId, productName, productPrice);
+                // renderCart(); // Ya no es necesario, updateCart() lo hace si está abierto
+            } else if (decBtn) {
+                const { productId } = decBtn.dataset;
+                removeFromCart(productId);
+                // renderCart(); // Ya no es necesario, updateCart() lo hace si está abierto
+            }
+        });
+
+        // Botón "Realizar Pedido" (muestra el de WhatsApp)
+        checkoutButton.addEventListener('click', () => {
+            const link = generateWhatsAppLink();
+            whatsappLinkButton.href = link;
+            
+            checkoutButton.classList.add('hidden');
+            whatsappLinkButton.classList.remove('hidden');
+            whatsappLinkButton.style.display = 'block';
+            cancelCheckoutButton.classList.remove('hidden');
+            cancelCheckoutButton.style.display = 'block';
+        });
+
+        // Botón "Cancelar" (vuelve a mostrar "Realizar Pedido")
+        cancelCheckoutButton.addEventListener('click', () => {
+            checkoutButton.classList.remove('hidden');
+            whatsappLinkButton.classList.add('hidden');
+            whatsappLinkButton.style.display = 'none';
+            cancelCheckoutButton.classList.add('hidden');
+            cancelCheckoutButton.style.display = 'none';
+        });
+        
+        // Botón "Confirmar y Abrir WhatsApp"
+        whatsappLinkButton.addEventListener('click', () => {
+            // Mostrar modal de éxito
+            const successBox = orderSuccessModal.querySelector('.success-modal-box');
+            orderSuccessModal.classList.remove('hidden');
+            orderSuccessModal.offsetWidth; // Forzar reflow
+            orderSuccessModal.classList.remove('opacity-0');
+            successBox.classList.remove('scale-95');
+            
+            // Ocultar modal del carrito
+            const cartModalBox = cartModal.querySelector('.cart-modal-box');
+            cartModal.classList.add('opacity-0');
+            cartModalBox.classList.add('scale-95');
+            setTimeout(() => {
+                cartModal.classList.add('hidden');
+            }, 300);
+
+            // Limpiar el carrito después de un momento
+            setTimeout(() => {
+                cart = {};
+                updateCart();
+                renderProducts(); // Resetear todos los botones de "Agregar"
+            }, 500);
+        });
+
+        // Botón "Entendido" (cierra el modal de éxito)
+        closeSuccessButton.addEventListener('click', () => {
+            const successBox = orderSuccessModal.querySelector('.success-modal-box');
+            orderSuccessModal.classList.add('opacity-0');
+            successBox.classList.add('scale-95');
+            
+            setTimeout(() => {
+                orderSuccessModal.classList.add('hidden');
+            }, 300); // Duración de la animación
+        });
+
+    });
+</script>
+
+</body>
+</html>
+

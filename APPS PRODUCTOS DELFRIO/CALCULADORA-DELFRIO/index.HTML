@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora DelFrio para Proporciones.</title>
+    <!-- Incluimos Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilo para la fuente Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        /* --- ESTILOS "NEÓN LÍQUIDO" --- */
+
+        /* Animación de Olas */
+        @keyframes wave {
+            0% { transform: translateX(0) scale(1.05); }
+            50% { transform: translateX(-25px) scale(1.0); }
+            100% { transform: translateX(0) scale(1.05); }
+        }
+
+        /* Contenedor del líquido */
+        .liquid-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: inherit; /* Hereda el borde del contenedor visual */
+        }
+        
+        /* El líquido en sí (con olas) */
+        .fill-level-liquid {
+            position: absolute;
+            bottom: 0;
+            left: -50%; /* Se extiende para que la ola no corte */
+            width: 200%;
+            height: 0%; /* Esta altura es la que se anima */
+            background: linear-gradient(to top, #06b6d4, #22d3ee); /* Gradiente cyan */
+            opacity: 0.8;
+            border-radius: 40%; /* Forma la ola */
+            animation: wave 4s infinite linear;
+            transition: height 0.5s ease-in-out;
+        }
+
+        /* --- CLASES PARA FORMAS (Adaptadas al modo oscuro) --- */
+        .shape-base {
+            background-color: transparent; /* El fondo lo da el glassmorphism */
+            border-width: 4px;
+            border-color: #0e7490; /* cyan-700 */
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* 1. Botella (con cuello) */
+        .shape-botella {
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+        .shape-botella::before {
+            content: '';
+            position: absolute;
+            top: -2.5rem; /* Altura del cuello */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4rem; /* w-16 */
+            height: 2.5rem; /* h-10 */
+            background-color: #020617; /* bg-slate-950 (fondo del body) */
+            border-width: 4px;
+            border-color: #0e7490;
+            border-bottom: none;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            z-index: 10;
+        }
+        
+        /* 2. Garrafa (Ancha) */
+        .shape-garrafa {
+            border-radius: 0.75rem; /* rounded-xl */
+        }
+
+        /* 3. Cubeta (Cónica) */
+        .shape-cubeta {
+            border-radius: 0.5rem; /* rounded-lg */
+            clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+        }
+        .shape-cubeta .liquid-container {
+            clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+        }
+        
+        /* 4. Bidón (Alto y Ancho) */
+        .shape-bidon {
+            border-radius: 1.5rem; /* rounded-2xl */
+        }
+
+        /* 5. Bote (Ancho y Bajo) */
+        .shape-bote {
+            border-radius: 0.75rem; /* rounded-xl */
+        }
+
+        /* 6. Botella Ancha (Sin cuello) */
+        .shape-botella_ancha {
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+        
+        /* 7. Atomizador */
+        .shape-atomizador {
+            border-radius: 0.5rem; /* rounded-lg */
+        }
+        .shape-atomizador::before {
+            content: '';
+            position: absolute;
+            top: -3.5rem; /* Altura del atomizador */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6rem; /* w-24 */
+            height: 3.5rem; /* h-14 */
+            background-color: #020617; /* bg-slate-950 */
+            border-width: 4px;
+            border-color: #0e7490;
+            border-bottom: none;
+            border-radius: 0.25rem; /* rounded-sm */
+            z-index: 10;
+        }
+
+        /* 8. Squeeze */
+        .shape-squeeze {
+            border-radius: 1rem; /* rounded-xl */
+        }
+
+        /* 9. Garrafa/Bidón Rectangular */
+        .shape-garrafa-rect {
+            border-radius: 0.75rem; /* rounded-xl */
+        }
+
+        /* 10. Botella Especial */
+        .shape-botella-suerox {
+            border-top-left-radius: 2rem;
+            border-top-right-radius: 2rem;
+            border-bottom-left-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+            clip-path: polygon(0% 100%, 0% 15%, 30% 0%, 70% 0%, 100% 15%, 100% 100%);
+        }
+        .shape-botella-suerox .liquid-container {
+            clip-path: polygon(0% 100%, 0% 15%, 30% 0%, 70% 0%, 100% 15%, 100% 100%);
+        }
+        
+        /* 11. Botella con Asa */
+        .shape-botella-asa {
+            border-radius: 1.5rem; /* rounded-2xl */
+        }
+        
+        /* 12. Botella Grande */
+        .shape-botella-grande {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+
+        /* 13. Botella Pequeña */
+        .shape-botella-peq {
+            border-radius: 0.5rem; /* rounded-lg */
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+
+    <div class="container mx-auto max-w-7xl p-4 lg:p-8">
+        
+        <!-- Título Centrado Neón -->
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-cyan-400 mb-8" style="text-shadow: 0 0 10px #06b6d4;">
+            "Productos DelFrio - Calculadora Visual de Proporciones."
+        </h1>
+
+        <!-- Contenedor Principal (2 columnas en escritorio) -->
+        <div class="lg:grid lg:grid-cols-2 lg:gap-8">
+
+            <!-- Columna Izquierda: Visualizador (Sticky) -->
+            <div class="lg:sticky lg:top-8 h-full">
+                <!-- Tarjeta de Visualización (Glassmorphism) -->
+                <div class="w-full bg-slate-800/60 backdrop-blur-lg border border-slate-700 rounded-2xl shadow-xl p-6 md:p-8 mb-6 lg:mb-0">
+                    <div class="flex flex-col items-center justify-between">
+                        
+                        <!-- Resultado en Texto (Neón) -->
+                        <div id="resultText" class="text-center font-bold text-3xl text-cyan-300 h-16 mb-4">
+                            ...
+                        </div>
+                        
+                        <!-- Advertencia de Desbordamiento -->
+                        <div id="warningText" class="text-center font-bold text-base text-red-500 h-8 mb-4">
+                            <!-- Mensaje de advertencia aquí -->
+                        </div>
+
+                        <!-- Envase Visual -->
+                        <div class="w-full h-80 flex items-end justify-center overflow-hidden">
+                            <div id="visualContainer" class="relative">
+                                <!-- Contenedor del Líquido Animado -->
+                                <div class="liquid-container">
+                                    <div id="fillLevel" class="fill-level-liquid"></div>
+                                </div>
+                                <!-- Etiquetas (encima del líquido) -->
+                                <div class="absolute top-2 left-0 right-0 w-full flex justify-between px-3 z-10">
+                                    <div id="fillVolumeLabel" class="text-sm font-bold text-cyan-100">0ml</div>
+                                    <div id="fillPercentLabel" class="text-sm font-bold text-cyan-100">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Formulario -->
+            <div>
+                <!-- Tarjeta de Formulario (Glassmorphism) -->
+                <div class="w-full bg-slate-800/60 backdrop-blur-lg border border-slate-700 rounded-2xl shadow-xl p-6 md:p-8">
+                    <div id="formContainer" class="space-y-6">
+                        
+                        <!-- Formulario en 2 columnas (en pantallas medianas y más) -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <!-- Sub-Columna Izquierda del Formulario -->
+                            <div class="space-y-6">
+                                <!-- 1. Datos del Producto -->
+                                <div class="space-y-3">
+                                    <h2 class="text-lg font-semibold text-cyan-500 border-b border-cyan-900 pb-2">1. Datos del Producto</h2>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="totalPrice" class="block text-sm font-medium text-slate-300 mb-1">Precio Total ($)</label>
+                                            <input type="number" id="totalPrice" value="23" class="mt-1 block w-full rounded-lg border-slate-600 bg-slate-700/50 shadow-lg text-slate-100 focus:border-cyan-500 focus:ring-cyan-500">
+                                        </div>
+                                        <div class="flex items-end space-x-2">
+                                            <div class="flex-grow">
+                                                <label for="totalVolume" class="block text-sm font-medium text-slate-300 mb-1">Volumen Total</label>
+                                                <input type="number" id="totalVolume" value="1000" class="mt-1 block w-full rounded-lg border-slate-600 bg-slate-700/50 shadow-lg text-slate-100 focus:border-cyan-500 focus:ring-cyan-500">
+                                            </div>
+                                            <select id="totalUnit" class="mt-1 block w-auto rounded-lg border-slate-600 bg-slate-700/50 shadow-lg text-slate-100 focus:border-cyan-500 focus:ring-cyan-500">
+                                                <option value="L">L</option>
+                                                <option value="ml" selected>ml</option>
+                                                <option value="kg">kg</option>
+                                                <option value="g">g</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Pedido del Cliente -->
+                                <div class="space-y-3">
+                                    <h2 class="text-lg font-semibold text-cyan-500 border-b border-cyan-900 pb-2">2. Pedido del Cliente</h2>
+                                    <div>
+                                        <label for="customerPrice" class="block text-sm font-medium text-slate-300 mb-1">Monto a vender ($)</label>
+                                        <input type="number" id="customerPrice" value="8" class="mt-1 block w-full rounded-lg border-slate-600 bg-slate-700/50 shadow-lg text-slate-100 focus:border-cyan-500 focus:ring-cyan-500" placeholder="Ej: 8">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sub-Columna Derecha del Formulario -->
+                            <div class="space-y-6">
+                                <!-- 3. Envase a Utilizar -->
+                                <div class="space-y-3">
+                                    <h2 class="text-lg font-semibold text-cyan-500 border-b border-cyan-900 pb-2">3. Envase a Utilizar</h2>
+                                    <div class="flex items-end space-x-2">
+                                        <div class="flex-grow">
+                                            <label for="containerCapacity" class="block text-sm font-medium text-slate-300 mb-1">Capacidad del Envase</label>
+                                            <input type="number" id="containerCapacity" value="500" class="mt-1 block w-full rounded-lg border-slate-600 bg-slate-700/50 shadow-lg text-slate-100 focus:border-cyan-500 focus:ring-cyan-500" placeholder="Ej: 500">
+                                        </div>
+                                        <select id="containerUnit" class="mt-1 block w-auto rounded-lg border-slate-600 bg-slate-700/50 shadow-lg text-slate-100 focus:border-cyan-500 focus:ring-cyan-500">
+                                            <option value="L">L</option>
+                                            <option value="ml" selected>ml</option>
+                                            <option value="kg">kg</option>
+                                            <option value="g">g</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="containerShape" class="block text-sm font-medium text-slate-300 mb-1">Forma del Envase</label>
+                                        <select id="containerShape" class="mt-1 block w-full rounded-lg border-slate-600 bg-slate-700/50 shadow-lg text-slate-100 focus:border-cyan-500 focus:ring-cyan-500">
+                                            <optgroup label="Formas Genéricas">
+                                                <option value="botella" data-capacity="" data-unit="ml">Botella Estándar</option>
+                                                <option value="garrafa" data-capacity="" data-unit="ml">Garrafa (Ancha)</option>
+                                                <option value="cubeta" data-capacity="" data-unit="ml">Cubeta (Cónica)</option>
+                                                <option value="bidon" data-capacity="" data-unit="ml">Bidón (Alto)</option>
+                                                <option value="bote" data-capacity="" data-unit="ml">Bote (Bajo y Ancho)</option>
+                                                <option value="botella_ancha" data-capacity="" data-unit="ml">Botella Ancha (Sin Cuello)</option>
+                                            </optgroup>
+                                            <optgroup label="Botellas Pequeñas (hasta 1L)">
+                                                <option value="negra_150ml" data-capacity="150" data-unit="ml">Botella (150ml)</option>
+                                                <option value="negra_250ml" data-capacity="250" data-unit="ml">Botella (250ml)</option>
+                                                <option value="atomizador_250ml" data-capacity="250" data-unit="ml">Botella Atomizador (250ml)</option>
+                                                <option value="negra_500ml" data-capacity="500" data-unit="ml">Botella (500ml)</option>
+                                                <option value="squeeze_500ml" data-capacity="500" data-unit="ml">Botella Squeeze (500ml)</option>
+                                                <option value="negra_suerox_500ml" data-capacity="500" data-unit="ml">Botella Especial (500ml)</option>
+                                                <option value="negra_600ml" data-capacity="600" data-unit="ml">Botella (600ml)</option>
+                                                <option value="negra_asa_1l" data-capacity="1" data-unit="L">Botella con Asa (1L)</option>
+                                            </optgroup>
+                                            <optgroup label="Botellas Grandes (más de 1L)">
+                                                <option value="negra_1_5l" data-capacity="1.5" data-unit="L">Botella (1.5L)</option>
+                                                <option value="negra_asa_2l" data-capacity="2" data-unit="L">Botella con Asa (2L)</option>
+                                                <option value="negra_2_5l" data-capacity="2.5" data-unit="L">Botella (2.5L)</option>
+                                                <option value="negra_3l" data-capacity="3" data-unit="L">Botella Grande (3L)</option>
+                                            </optgroup>
+                                            <optgroup label="Garrafas">
+                                                <option value="garrafa_1l" data-capacity="1" data-unit="L">Garrafa (1L)</option>
+                                                <option value="garrafa_5l" data-capacity="5" data-unit="L">Garrafa (5L)</option>
+                                            </optgroup>
+                                            <optgroup label="Bidones y Cubetas">
+                                                <option value="bidon_10l" data-capacity="10" data-unit="L">Bidón (10L)</option>
+                                                <option value="bidon_20l" data-capacity="20" data-unit="L">Bidón (20L)</option>
+                                                <option value="cubeta_50l" data-capacity="50" data-unit="L">Cubeta (50L)</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- Fin del grid md:grid-cols-2 -->
+
+                    </div>
+                </div>
+            </div>
+        </div> <!-- Fin del grid lg:grid-cols-2 -->
+    </div>
+
+    <!-- --- Configuración de Formas --- -->
+    <script>
+        const shapeConfig = {
+            // --- Formas Genéricas ---
+            botella: { container: ['shape-botella', 'w-48', 'h-64'] },
+            garrafa: { container: ['shape-garrafa', 'w-64', 'h-56'] },
+            cubeta: { container: ['shape-cubeta', 'w-56', 'h-64'] },
+            bidon: { container: ['shape-bidon', 'w-56', 'h-72'] },
+            bote: { container: ['shape-bote', 'w-64', 'h-48'] },
+            botella_ancha: { container: ['shape-botella_ancha', 'w-56', 'h-64'] },
+            // --- Botellas Pequeñas ---
+            negra_150ml: { container: ['shape-botella-peq', 'w-24', 'h-40'] },
+            negra_250ml: { container: ['shape-botella-peq', 'w-28', 'h-48'] },
+            atomizador_250ml: { container: ['shape-atomizador', 'w-32', 'h-48'] },
+            negra_500ml: { container: ['shape-botella-peq', 'w-36', 'h-60'] },
+            squeeze_500ml: { container: ['shape-squeeze', 'w-40', 'h-64'] },
+            negra_suerox_500ml: { container: ['shape-botella-suerox', 'w-40', 'h-64'] },
+            negra_600ml: { container: ['shape-botella-peq', 'w-36', 'h-64'] },
+            negra_asa_1l: { container: ['shape-botella-asa', 'w-44', 'h-72'] },
+            // --- Botellas Grandes ---
+            negra_1_5l: { container: ['shape-botella-peq', 'w-44', 'h-72'] },
+            negra_asa_2l: { container: ['shape-botella-asa', 'w-48', 'h-80'] },
+            negra_2_5l: { container: ['shape-botella-grande', 'w-52', 'h-80'] },
+            negra_3l: { container: ['shape-botella-grande', 'w-56', 'h-80'] },
+            // --- Garrafas ---
+            garrafa_1l: { container: ['shape-garrafa-rect', 'w-40', 'h-56'] },
+            garrafa_5l: { container: ['shape-garrafa-rect', 'w-48', 'h-64'] },
+            // --- Bidones y Cubetas ---
+            bidon_10l: { container: ['shape-garrafa-rect', 'w-56', 'h-72'] },
+            bidon_20l: { container: ['shape-garrafa-rect', 'w-64', 'h-80'] },
+            cubeta_50l: { container: ['shape-cubeta', 'w-72', 'h-80'] },
+        };
+
+        // Clases a limpiar
+        const allShapeClasses = Object.values(shapeConfig)
+            .flatMap(config => config.container)
+            .filter((v, i, a) => a.indexOf(v) === i); // Filtra duplicadas
+
+        /**
+         * Convierte un valor a una unidad base (ml o g).
+         */
+        function convertToBaseUnit(value, unit) {
+            if (unit === 'L' || unit === 'kg') {
+                return value * 1000;
+            }
+            return value;
+        }
+
+        /**
+         * Obtiene la unidad base (ml o g) de una unidad dada.
+         */
+        function getBaseUnit(unit) {
+            if (unit === 'L' || unit === 'ml') return 'ml';
+            if (unit === 'kg' || unit === 'g') return 'g';
+            return 'unidades';
+        }
+    </script>
+
+    <!-- Lógica principal de la aplicación -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Referencias a elementos del DOM ---
+            const totalPriceEl = document.getElementById('totalPrice');
+            const totalVolumeEl = document.getElementById('totalVolume');
+            const totalUnitEl = document.getElementById('totalUnit');
+            
+            const customerPriceEl = document.getElementById('customerPrice');
+            
+            const containerCapacityEl = document.getElementById('containerCapacity');
+            const containerUnitEl = document.getElementById('containerUnit');
+            const containerShapeEl = document.getElementById('containerShape'); 
+            const formContainer = document.getElementById('formContainer');
+            
+            const visualContainerEl = document.getElementById('visualContainer'); 
+            const fillLevelEl = document.getElementById('fillLevel');
+            const fillPercentLabelEl = document.getElementById('fillPercentLabel');
+            const fillVolumeLabelEl = document.getElementById('fillVolumeLabel'); 
+            const resultTextEl = document.getElementById('resultText');
+            const warningTextEl = document.getElementById('warningText');
+
+            let lastCalculatedVolume = "0";
+            let lastBaseUnit = "ml";
+
+            /**
+             * Actualiza la forma visual del contenedor basado en el dropdown.
+             */
+            function updateVisualShape() {
+                // 1. Actualizar Datos del Envase
+                const selectedOption = containerShapeEl.options[containerShapeEl.selectedIndex];
+                const capacity = selectedOption.dataset.capacity;
+                const unit = selectedOption.dataset.unit;
+
+                if (capacity && unit) {
+                    containerCapacityEl.value = capacity;
+                    containerUnitEl.value = unit;
+                }
+
+                // 2. Actualizar Forma Visual
+                const shape = containerShapeEl.value; 
+                
+                // Limpiar clases viejas
+                visualContainerEl.classList.remove(...allShapeClasses, 'shape-base');
+                
+                // Aplicar clases nuevas
+                const config = shapeConfig[shape];
+                if (config) {
+                    visualContainerEl.classList.add('shape-base', ...config.container);
+                }
+            } 
+
+            /**
+             * Función principal para calcular el llenado.
+             */
+            function calculateFillLevel() {
+                // 1. Obtener valores y parsear
+                const totalPrice = parseFloat(totalPriceEl.value);
+                const totalVolume = parseFloat(totalVolumeEl.value);
+                const totalUnit = totalUnitEl.value;
+                
+                const customerPrice = parseFloat(customerPriceEl.value);
+                
+                const containerCapacity = parseFloat(containerCapacityEl.value);
+                const containerUnit = containerUnitEl.value;
+
+                // 2. Obtener unidades base
+                const baseUnitProduct = getBaseUnit(totalUnit);
+                const baseUnitContainer = getBaseUnit(containerUnit);
+                lastBaseUnit = baseUnitContainer || baseUnitProduct || 'ml';
+
+                // 3. Limpiar advertencias
+                warningTextEl.textContent = "";
+
+                // 4. Validar compatibilidad de unidades
+                if (baseUnitProduct !== baseUnitContainer) {
+                    warningTextEl.textContent = "Error: Unidades no compatibles (ej. Litros y Gramos).";
+                    resultTextEl.textContent = "...";
+                    fillLevelEl.style.height = '0%';
+                    fillPercentLabelEl.textContent = '0%';
+                    fillVolumeLabelEl.textContent = '0' + lastBaseUnit;
+                    lastCalculatedVolume = "0";
+                    return;
+                }
+
+                // 5. Validar números
+                if (isNaN(totalPrice) || isNaN(totalVolume) || isNaN(customerPrice) || isNaN(containerCapacity) ||
+                    totalPrice <= 0 || totalVolume <= 0 || customerPrice <= 0 || containerCapacity <= 0) {
+                    warningTextEl.textContent = "Por favor, ingresa valores numéricos positivos.";
+                    resultTextEl.textContent = "...";
+                    fillLevelEl.style.height = '0%';
+                    fillPercentLabelEl.textContent = '0%';
+                    fillVolumeLabelEl.textContent = '0' + lastBaseUnit;
+                    lastCalculatedVolume = "0";
+                    return;
+                }
+
+                // 6. Convertir a unidades base
+                const totalVolumeInBase = convertToBaseUnit(totalVolume, totalUnit);
+                const containerCapacityInBase = convertToBaseUnit(containerCapacity, containerUnit);
+
+                // 7. Calcular
+                const pricePerUnit = totalPrice / totalVolumeInBase;
+                const volumeToServe = customerPrice / pricePerUnit;
+                const fillPercentage = (volumeToServe / containerCapacityInBase) * 100;
+                
+                lastCalculatedVolume = volumeToServe.toFixed(1);
+
+                // 8. Actualizar UI
+                let displayPercentage = fillPercentage;
+                
+                if (fillPercentage > 100) {
+                    displayPercentage = 100;
+                    warningTextEl.textContent = `¡Advertencia! Se excede la capacidad del envase.`;
+                }
+                
+                if (fillPercentage < 0) {
+                     displayPercentage = 0;
+                }
+
+                fillLevelEl.style.height = `${displayPercentage.toFixed(1)}%`;
+                fillPercentLabelEl.textContent = `${displayPercentage.toFixed(1)}%`;
+                fillVolumeLabelEl.textContent = `${lastCalculatedVolume} ${lastBaseUnit}`; 
+
+                resultTextEl.innerHTML = `Servir: <strong class="text-cyan-200" style="text-shadow: 0 0 5px #22d3ee;">${lastCalculatedVolume} ${lastBaseUnit}</strong>`;
+            }
+
+            // --- Asignar Event Listeners ---
+            
+            // Event Delegation para Recálculo en Vivo
+            formContainer.addEventListener('input', (event) => {
+                // Si el cambio fue en el dropdown de formas, actualiza el visual
+                if (event.target.id === 'containerShape') {
+                    updateVisualShape();
+                }
+                // Siempre recalcula con cualquier input
+                calculateFillLevel();
+            });
+
+            // --- Inicialización ---
+            updateVisualShape(); // Configura la forma inicial (CORREGIDO)
+            calculateFillLevel(); // Calcula los valores iniciales
+        
+        });
+    </script>
+</body>
+</html>
