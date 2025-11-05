@@ -352,4 +352,183 @@
             negra_3l: { container: ['shape-botella-grande', 'w-56', 'h-80'] },
             // --- Garrafas ---
             garrafa_1l: { container: ['shape-garrafa-rect', 'w-40', 'h-56'] },
-      
+            garrafa_5l: { container: ['shape-garrafa-rect', 'w-48', 'h-64'] },
+            // --- Bidones y Cubetas ---
+            bidon_10l: { container: ['shape-garrafa-rect', 'w-56', 'h-72'] },
+            bidon_20l: { container: ['shape-garrafa-rect', 'w-64', 'h-80'] },
+            cubeta_50l: { container: ['shape-cubeta', 'w-72', 'h-80'] },
+        };
+
+        // Clases a limpiar
+        const allShapeClasses = Object.values(shapeConfig)
+            .flatMap(config => config.container)
+            .filter((v, i, a) => a.indexOf(v) === i); // Filtra duplicadas
+
+        /**
+         * Convierte un valor a una unidad base (ml o g).
+         */
+        function convertToBaseUnit(value, unit) {
+            if (unit === 'L' || unit === 'kg') {
+                return value * 1000;
+            }
+            return value;
+        }
+
+        /**
+         * Obtiene la unidad base (ml o g) de una unidad dada.
+         */
+        function getBaseUnit(unit) {
+            if (unit === 'L' || unit === 'ml') return 'ml';
+            if (unit === 'kg' || unit === 'g') return 'g';
+            return 'unidades';
+        }
+    </script>
+
+    <!-- Lógica principal de la aplicación -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Referencias a elementos del DOM ---
+            const totalPriceEl = document.getElementById('totalPrice');
+            const totalVolumeEl = document.getElementById('totalVolume');
+            const totalUnitEl = document.getElementById('totalUnit');
+            
+            const customerPriceEl = document.getElementById('customerPrice');
+            
+            const containerCapacityEl = document.getElementById('containerCapacity');
+            const containerUnitEl = document.getElementById('containerUnit');
+            const containerShapeEl = document.getElementById('containerShape'); 
+            const formContainer = document.getElementById('formContainer');
+            
+            const visualContainerEl = document.getElementById('visualContainer'); 
+            const fillLevelEl = document.getElementById('fillLevel');
+            const fillPercentLabelEl = document.getElementById('fillPercentLabel');
+            const fillVolumeLabelEl = document.getElementById('fillVolumeLabel'); 
+            const resultTextEl = document.getElementById('resultText');
+            const warningTextEl = document.getElementById('warningText');
+
+            let lastCalculatedVolume = "0";
+            let lastBaseUnit = "ml";
+
+            /**
+             * Actualiza la forma visual del contenedor basado en el dropdown.
+             */
+            function updateVisualShape() {
+                // 1. Actualizar Datos del Envase
+                const selectedOption = containerShapeEl.options[containerShapeEl.selectedIndex];
+                const capacity = selectedOption.dataset.capacity;
+                const unit = selectedOption.dataset.unit;
+
+                if (capacity && unit) {
+                    containerCapacityEl.value = capacity;
+                    containerUnitEl.value = unit;
+                }
+
+                // 2. Actualizar Forma Visual
+                const shape = containerShapeEl.value; 
+                
+                // Limpiar clases viejas
+                visualContainerEl.classList.remove(...allShapeClasses, 'shape-base');
+                
+                // Aplicar clases nuevas
+                const config = shapeConfig[shape];
+                if (config) {
+                    visualContainerEl.classList.add('shape-base', ...config.container);
+                }
+            } 
+
+            /**
+             * Función principal para calcular el llenado.
+             */
+            function calculateFillLevel() {
+                // 1. Obtener valores y parsear
+                const totalPrice = parseFloat(totalPriceEl.value);
+                const totalVolume = parseFloat(totalVolumeEl.value);
+                const totalUnit = totalUnitEl.value;
+                
+                const customerPrice = parseFloat(customerPriceEl.value);
+                
+                const containerCapacity = parseFloat(containerCapacityEl.value);
+                const containerUnit = containerUnitEl.value;
+
+                // 2. Obtener unidades base
+                const baseUnitProduct = getBaseUnit(totalUnit);
+                const baseUnitContainer = getBaseUnit(containerUnit);
+                lastBaseUnit = baseUnitContainer || baseUnitProduct || 'ml';
+
+                // 3. Limpiar advertencias
+                warningTextEl.textContent = "";
+
+                // 4. Validar compatibilidad de unidades
+                if (baseUnitProduct !== baseUnitContainer) {
+                    warningTextEl.textContent = "Error: Unidades no compatibles (ej. Litros y Gramos).";
+                    resultTextEl.textContent = "...";
+                    fillLevelEl.style.height = '0%';
+                    fillPercentLabelEl.textContent = '0%';
+                    fillVolumeLabelEl.textContent = '0' + lastBaseUnit;
+                    lastCalculatedVolume = "0";
+                    return;
+                }
+
+                // 5. Validar números
+                if (isNaN(totalPrice) || isNaN(totalVolume) || isNaN(customerPrice) || isNaN(containerCapacity) ||
+                    totalPrice <= 0 || totalVolume <= 0 || customerPrice <= 0 || containerCapacity <= 0) {
+                    warningTextEl.textContent = "Por favor, ingresa valores numéricos positivos.";
+                    resultTextEl.textContent = "...";
+                    fillLevelEl.style.height = '0%';
+                    fillPercentLabelEl.textContent = '0%';
+                    fillVolumeLabelEl.textContent = '0' + lastBaseUnit;
+                    lastCalculatedVolume = "0";
+                    return;
+                }
+
+                // 6. Convertir a unidades base
+                const totalVolumeInBase = convertToBaseUnit(totalVolume, totalUnit);
+                const containerCapacityInBase = convertToBaseUnit(containerCapacity, containerUnit);
+
+                // 7. Calcular
+                const pricePerUnit = totalPrice / totalVolumeInBase;
+                const volumeToServe = customerPrice / pricePerUnit;
+                const fillPercentage = (volumeToServe / containerCapacityInBase) * 100;
+                
+                lastCalculatedVolume = volumeToServe.toFixed(1);
+
+                // 8. Actualizar UI
+                let displayPercentage = fillPercentage;
+                
+                if (fillPercentage > 100) {
+                    displayPercentage = 100;
+                    warningTextEl.textContent = `¡Advertencia! Se excede la capacidad del envase.`;
+                }
+                
+                if (fillPercentage < 0) {
+                     displayPercentage = 0;
+                }
+
+                fillLevelEl.style.height = `${displayPercentage.toFixed(1)}%`;
+                fillPercentLabelEl.textContent = `${displayPercentage.toFixed(1)}%`;
+                fillVolumeLabelEl.textContent = `${lastCalculatedVolume} ${lastBaseUnit}`; 
+
+                resultTextEl.innerHTML = `Servir: <strong class="text-cyan-200" style="text-shadow: 0 0 5px #22d3ee;">${lastCalculatedVolume} ${lastBaseUnit}</strong>`;
+            }
+
+            // --- Asignar Event Listeners ---
+            
+            // Event Delegation para Recálculo en Vivo
+            formContainer.addEventListener('input', (event) => {
+                // Si el cambio fue en el dropdown de formas, actualiza el visual
+                if (event.target.id === 'containerShape') {
+                    updateVisualShape();
+                }
+                // Siempre recalcula con cualquier input
+                calculateFillLevel();
+            });
+
+            // --- Inicialización ---
+            updateVisualShape(); // Configura la forma inicial (CORREGIDO)
+            calculateFillLevel(); // Calcula los valores iniciales
+        
+        });
+    </script>
+</body>
+</html>
