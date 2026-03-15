@@ -3,8 +3,31 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Productos DelFrio - Catálogo</title>
+
+    <!-- ========================================== -->
+    <!-- CONFIGURACIÓN PARA "APP" (Añadir a Inicio) -->
+    <!-- ========================================== -->
+    <!-- Color de la barra de notificaciones del celular (Dark mode POS) -->
+    <meta name="theme-color" content="#020617">
+
+    <!-- Oculta la barra del navegador en iOS para que parezca app nativa -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Catálogo DelFrio">
+
+    <!-- Oculta la barra en Android y habilita el modo "Standalone" (App real) -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Ícono estándar para navegadores y Android -->
+    <link rel="icon" type="image/png" href="./img/icon-app.png">
+
+    <!-- Ícono de alta resolución para iPhone/iPad (Apple Touch Icon) -->
+    <link rel="apple-touch-icon" href="./img/icon-app.png">
+    <!-- ========================================== -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -300,7 +323,7 @@
                     <!-- Logo Header: Más grande, sin bordes feos (blend-logo) -->
                     <div class="flex-shrink-0 flex items-center">
                         <img src="./img/logo-panel.png" alt="DelFrio"
-                            class="h-20 sm:h-22 md:h-[4.5rem] w-auto object-contain blend-logo">
+                            class="h-20 sm:h-24 md:h-[4.5rem] w-auto object-contain blend-logo">
                     </div>
 
                     <!-- Buscador Desktop (Llama la atención y llena el panel) -->
@@ -432,7 +455,8 @@
             <div class="p-5 border-t border-white/10 z-10 bg-slate-900/60 backdrop-blur-lg">
 
                 <div class="flex justify-between items-end mb-5">
-                    <span class="text-sm font-medium text-cyan-200/70 uppercase tracking-wider">Subtotal Neto</span>
+                    <span class="text-sm font-medium text-cyan-200/70 uppercase tracking-wider">Subtotal sin costo de
+                        envío</span>
                     <span id="cartTotal" class="text-3xl font-bold text-cyan-400"
                         style="text-shadow: 0 0 15px rgba(6,182,212,0.4);">$0.00</span>
                 </div>
@@ -736,10 +760,9 @@
                 const firstName = getSafeFirstName(customerName);
 
                 // Saludo en Desktop (Header)
-                headerGreeting.textContent = `¡Hola, ${firstName}! ¿Qué deseas pedir hoy?`;
-
+                headerGreeting.textContent = `¡Bienvenido(a), ${firstName}!`;
                 // Saludo en Mobile (Cuerpo)
-                mobileGreeting.innerHTML = `Bienvenido <strong class="text-cyan-400">${firstName}</strong>, empieza a armar tu lista.`;
+                mobileGreeting.innerHTML = `Bienvenido(a) <strong class="text-cyan-400">${firstName}</strong>, será un placer atenderte.`;
 
                 renderProducts();
                 updateCartUI();
@@ -917,14 +940,14 @@
                                 <div class="text-sm text-slate-300 space-y-4 mt-3">
                                     <div>
                                         <strong class="text-cyan-400">• Selene y Amp. Selene:</strong> ¡Envío GRATIS! <br>
-                                        <span class="text-xs text-slate-400 block mt-1">*Aplica para pedidos de tamaño estándar que quepan en nuestra canastilla (50x50 cm aprox.).</span>
+                                        <span class="text-xs text-slate-400 block mt-1">*Aplica para pedidos de tamaño estándar que quepan en nuestra canastilla (50x50 cm aprox).</span>
                                     </div>
                                     <div>
                                         <strong class="text-cyan-400">• Tlaltenco y El Calvario:</strong> $15.00 MXN
                                     </div>
                                     <div>
                                         <strong class="text-cyan-400">• Pedidos de alto volumen/peso:</strong> <br>
-                                        <span class="text-xs text-slate-400 block mt-1 leading-relaxed">Si tu compra es muy grande y requiere un viaje exclusivo en bicicleta, se cobrarán $10.00 MXN por viaje extra. También podemos coordinar envío por auto a cargo del cliente para proteger los productos.</span>
+                                        <span class="text-xs text-slate-400 block mt-1 leading-relaxed">Si tu compra es muy grande y requiere un viaje exclusivo en bicicleta, se cobrarán de $5.00 MXN a $10.00 MXN por viaje extra, según la distancia, tamaño y peso. También podemos coordinar envío por auto a cargo del cliente para proteger los productos del pedido.</span>
                                     </div>
                                     <div>
                                         <strong class="text-cyan-400">• Pedidos fuera de horario:</strong> <br>
@@ -932,11 +955,11 @@
                                     </div>
                                     <div>
                                         <strong class="text-cyan-400">• Pedidos urgentes (Exprés):</strong> <br>
-                                        <span class="text-xs text-slate-400 block mt-1 leading-relaxed">Si necesitas tu pedido de forma inmediata, por favor menciónalo al enviarnos el WhatsApp. La entrega exprés está sujeta a la disponibilidad del repartidor y podría generar un costo adicional. <span class="text-cyan-300 font-medium block mt-2">💡 Te sugerimos siempre prevenirte realizando tus pedidos con anticipación para evitar contratiempos.</span></span>
+                                        <span class="text-xs text-slate-400 block mt-1 leading-relaxed">Si necesitas tu pedido de forma urgente, por favor menciónalo al enviarnos el WhatsApp. La entrega exprés está sujeta a la disponibilidad del repartidor y podría generar un costo adicional. <span class="text-cyan-300 font-medium block mt-2">💡 Te sugerimos siempre prevenirte realizando tus pedidos con anticipación para evitar contratiempos y costos extras.</span></span>
                                     </div>
                                 </div>
                                 <p class="text-[13px] text-teal-400 mt-4 italic font-medium">
-                                    Por favor, consúltanos si tienes dudas sobre el tamaño de tu pedido. ¡Nos preocupamos por la seguridad del repartidor y cuidamos que tu pedido llegue en perfecto estado!
+                                    Por favor, consúltanos si tienes dudas sobre el tamaño de tu pedido. ¡Nos importa la seguridad de nuestros repartidores y cuidamos que todo tu pedido llegue en perfecto estado! 
                                 </p>
                             </div>
                         </details>
@@ -959,12 +982,12 @@
                                         <ul class="list-none pl-6 text-sm text-slate-300 mt-2 space-y-1 font-normal bg-slate-900/60 p-3 rounded-xl border border-white/5 shadow-inner">
                                             <li><strong class="text-cyan-400">Banco:</strong> Nu México</li>
                                             <li><strong class="text-cyan-400">Nombre:</strong> Francisco Javier Rayón Ugalde</li>
-                                            <li><strong class="text-cyan-400">CLABE:</strong> 638 18001010401064 7 </li>
+                                            <li><strong class="text-cyan-400">CLABE:</strong> 638 180 01010401064 7</li>
                                             <li><strong class="text-cyan-400">Concepto:</strong> "TU NOMBRE DE CLIENTE"</li>
                                         </ul>
                                     </li>
                                 </ul>
-                                <p class="text-[13px] text-cyan-400 mt-4 italic font-medium">Por favor, envía tu comprobante por WhatsApp una vez confirmado tu pedido.</p>
+                                <p class="text-[13px] text-cyan-400 mt-4 italic font-medium">Por favor, envía tu comprobante por WhatsApp una vez confirmemos tu pedido.</p>
                             </div>
                         </details>
                     </div>`;
